@@ -18,6 +18,8 @@ package com.example.android.sunshine;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -32,7 +34,8 @@ import com.example.android.sunshine.utilities.OpenWeatherJsonUtils;
 import java.net.URL;
 
 public class MainActivity extends AppCompatActivity {
-    TextView mWeatherTextView;
+    private RecyclerView mRecyclerView;
+    private ForecastAdapter mForecastAdapter;
     private TextView mErrorMessageDisplay;
     private ProgressBar mLoadingIndicator;
 
@@ -41,12 +44,20 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_forecast);
 
+        mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_forecast);
 
 
-        mWeatherTextView=(TextView)findViewById(R.id.tv_weather_data);
+
         mLoadingIndicator = (ProgressBar) findViewById(R.id.pb_loading_indicator);
 
         mErrorMessageDisplay = (TextView) findViewById(R.id.tv_error_message_display);
+        LinearLayoutManager layoutManager
+                = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        // COMPLETED (41) Set the layoutManager on mRecyclerView
+        mRecyclerView.setLayoutManager(layoutManager);
+        mRecyclerView.setHasFixedSize(true);
+        mForecastAdapter = new ForecastAdapter();
+        mRecyclerView.setAdapter(mForecastAdapter);
         loadWeatherData();
 
 
@@ -63,11 +74,11 @@ public class MainActivity extends AppCompatActivity {
         /* First, make sure the error is invisible */
         mErrorMessageDisplay.setVisibility(View.INVISIBLE);
         /* Then, make sure the weather data is visible */
-        mWeatherTextView.setVisibility(View.VISIBLE);
+        mRecyclerView.setVisibility(View.VISIBLE);
     }
     private void showErrorMessage() {
         /* First, hide the currently visible data */
-        mWeatherTextView.setVisibility(View.INVISIBLE);
+        mRecyclerView.setVisibility(View.INVISIBLE);
         /* Then, show the error */
         mErrorMessageDisplay.setVisibility(View.VISIBLE);
     }
@@ -118,9 +129,8 @@ public class MainActivity extends AppCompatActivity {
                  * the "\n\n\n" after the String is to give visual separation between each String in the
                  * TextView. Later, we'll learn about a better way to display lists of data.
                  */
-                for (String weatherString : weatherData) {
-                    mWeatherTextView.append((weatherString) + "\n\n\n");
-                }
+
+                mForecastAdapter.setWeatherData(weatherData);
             }
             else
             {
@@ -143,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.action_refresh) {
-            mWeatherTextView.setText("");
+            mForecastAdapter.setWeatherData(null);
             loadWeatherData();
             return true;
         }
