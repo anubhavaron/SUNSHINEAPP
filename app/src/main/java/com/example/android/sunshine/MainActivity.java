@@ -308,21 +308,21 @@ public class MainActivity extends AppCompatActivity implements
      * need to check whether each view is currently visible or invisible.
      */
     private void showErrorMessage() {
-        /* First, hide the currently visible data */
+
         mRecyclerView.setVisibility(View.INVISIBLE);
-        /* Then, show the error */
+
         mErrorMessageDisplay.setVisibility(View.VISIBLE);
     }
 
-    // COMPLETED (6) Remove any and all code from MainActivity that references FetchWeatherTask
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        /* Use AppCompatActivity's method getMenuInflater to get a handle on the menu inflater */
+
         MenuInflater inflater = getMenuInflater();
-        /* Use the inflater's inflate method to inflate our menu layout to this menu */
+
         inflater.inflate(R.menu.menu, menu);
-        /* Return true so that the menu is displayed in the Toolbar */
+
         return true;
     }
 
@@ -330,7 +330,7 @@ public class MainActivity extends AppCompatActivity implements
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        // COMPLETED (5) Refactor the refresh functionality to work with our AsyncTaskLoader
+
         if (id == R.id.action_refresh) {
             invalidateData();
             getSupportLoaderManager().restartLoader(FORECAST_LOADER_ID, null, this);
@@ -341,6 +341,14 @@ public class MainActivity extends AppCompatActivity implements
             openLocationInMap();
             return true;
         }
+        if(id==R.id.action_settings)
+        {
+            Intent startSettingsActivity = new Intent(this, SettingActivity.class);
+            startActivity(startSettingsActivity);
+            return true;
+
+        }
+
 
         return super.onOptionsItemSelected(item);
     }
